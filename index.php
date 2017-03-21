@@ -146,10 +146,30 @@ class ProjectAnalize
 			    $tableData[] = [$dirName, $count, $percent . '%'];
 			}
 		}
+		$this->out('Big dirs:');
 	    $this->outTable(['Dir', 'Files', 'Percent'], $tableData);
 		$this->out('');
 
+		// for test:
 		// $this->out("Count check: " . (array_sum($rootDirs) + $filesInRoot));
+	}
+
+	public function fileStat()
+	{
+		$bigFiles = [];
+		foreach ($this->files() as $file) {
+			if ($file->getSize() > 1024 * 32) {
+				$bigFiles[] = [(int)($file->getSize()/1024), $file->getRelativePathname()];
+			}
+			ksort($bigFiles);
+		}
+		usort($bigFiles, function($a, $b){
+			return $a[0] < $b[0];
+		});
+
+		$this->out('Big files:');
+	    $this->outTable(['Size, kb', 'Name'], $bigFiles);
+		$this->out('');
 	}
 
 	// sort
@@ -185,13 +205,21 @@ class ProjectAnalize
 	}
 	private function outTable($fields, $data)
 	{
+		// add index column
+		array_unshift($fields, '#');
+		$numberRow = 1;
+		$data = array_map(function($row) use (&$numberRow) {
+			array_unshift($row, $numberRow++);
+			return $row;
+		}, $data);
+
 		$sizes = [];
 		$header = '';
 		foreach ($fields as $i => $fieldName) {
 			$column = array_column($data, $i);
 			$columnWidths = array_map('strlen', $column);
 			$columnWidths[] = strlen($fieldName);
-			$maxWidth = max( $columnWidths );
+			$maxWidth = max($columnWidths);
 			$sizes[$i] = $maxWidth;
 			$header .= str_pad($fieldName, $maxWidth) . ' | ';
 		}
@@ -209,45 +237,7 @@ class ProjectAnalize
 	}
 }
 
-// $pa = new ProjectAnalize('/data/projects/rabota.ngs.ru/scripts/Job');
-// $pa->dirStat();
-// $pa->view();
-
-
-
-
-// run:
-// /data/soft/php56/bin/php index.php
-
-$_SERVER['NGS_REQUEST_ID'] = 1234;
-$_SERVER['HTTP_HOST'] = "www.zarplata.ru.oc.d";
-
-include '/data/projects/rabota.ngs.ru/scripts/__init.php';
-
-try {
-    if (is_null($request)) {
-        $request = new Ngs_Request();
-    }
-    if (is_null($router)) {
-        $router = new Ngs_Router($config);
-    }
-
-    $router->setHost($request->getBaseUrl());
-    $router->setMethod($request->getMethod());
-
-    $path = array();
-
-    // Создаем страницу
-    $page = new Job_Page_Admin_Entity_Vacancy($config, $request, $router);
-    $page->setPath($path);
-
-} catch (Exception $e){
-	echo "\nException: " . $e->getMessage() . "\n";
-	echo $e->getFile() .":". $e->getLine() . "\n";
-}
-
-if (method_exists($page, 'initEvents')) {
-    $page->initEvents();
-}
-$page->run();
-echo $page;
+$pa = new ProjectAnalize('/home/oleg/sources/job/scripts/Job');
+$pa->dirStat();
+$pa->fileStat();
+$pa->view();
