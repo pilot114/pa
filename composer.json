@@ -1,5 +1,6 @@
 {
     "require": {
-        "symfony/finder": "^3.2"
+        "symfony/finder": "^3.2",
+        "squizlabs/php_codesniffer": "^2.8"
     }
 }
