@@ -1,7 +1,6 @@
 <?php
 
 $functions = get_defined_functions()['internal'];
-echo count($functions);
 
 foreach ($functions as $i => $name) {
 	$f = new ReflectionFunction($name);
@@ -21,6 +20,17 @@ foreach ($functions as $i => $name) {
             $args[] = $tmparg;
             unset($tmparg);
     }
-    $functions_list[] = 'function ' . $name . ' ( ' . implode(', ', $args) . ' )' . PHP_EOL;
+    $functions_list[] = [
+        'name' => $name,
+        'sign' => 'function ' . $name . ' ( ' . implode(', ', $args) . ' )' . PHP_EOL
+    ];
 }
-print_r($functions_list);
+
+$know = [
+    // устанавливаем имя
+    'cli_get_process_title',
+    'cli_set_process_title',
+]
+
+echo count($functions_list);
+print_r($functions);
