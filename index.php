@@ -98,6 +98,9 @@ class ProjectAnalize
 
         $this->out("Total files: " .   $totalFilesCount);
         $this->out("Not php files: " . $this->files()->notName('*.php')->count());
+        foreach ($this->files()->notName('*.php') as $file) {
+            $this->out('* ' . $file->getRelativePathname());
+        }
         $this->out("Dirs in root: " .  $this->directories()->depth('== 0')->count());
         $this->out("Files in root: " .  $filesInRoot);
         $this->out('');
@@ -118,7 +121,7 @@ class ProjectAnalize
                 $tableData[] = [$dirName, $count, $percent . '%'];
             }
         }
-        $this->out('Big dirs:');
+        $this->out('Big dirs: (>1% file count)');
         $this->outTable(['Dir', 'Files', 'Percent'], $tableData);
         $this->out('');
 
@@ -141,7 +144,7 @@ class ProjectAnalize
             }
         );
 
-        $this->out('Big files:');
+        $this->out('Big files: (>32kb)');
         $this->outTable(['Size, kb', 'Name'], $bigFiles);
         $this->out('');
     }
