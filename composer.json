@@ -1,6 +1,7 @@
 {
     "require": {
         "symfony/finder": "^3.2",
-        "squizlabs/php_codesniffer": "^2.8"
+        "laravel/tinker": "^1.0",
+        "guzzlehttp/guzzle": "^6.2"
     }
 }
