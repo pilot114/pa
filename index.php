@@ -2,14 +2,21 @@
 
 require './bootstrap.php';
 
-$pa = new FileAnalize('/home/oleg/sources/job/scripts/Job');
-// $pa->dirStat();
+$projectDir = '/home/pilot114/sources/job/';
+
+echo '<pre>';
+
+$pa = new FileAnalize($projectDir . 'scripts/Job');
+$pa->dirStat();
 $pa->fileStat();
 $pa->view();
 
-$sa = new ServiceAnalize('/home/oleg/sources/job/config/container.php');
-// print_r($sa->getInfo());
+$sa = new ServiceAnalize($projectDir . 'config/container.php');
+print_r($sa->getInfo());
 
-$ea = new ExtendsAnalize('/home/oleg/sources/job/scripts/Job');
-print_r($ea->buildTree());
-print_r($ea->getTree());
+echo '</pre>';
+
+
+$ea = new ExtendsAnalize($projectDir . 'scripts/Job');
+$ea->buildTree();
+$ea->dumpTree();

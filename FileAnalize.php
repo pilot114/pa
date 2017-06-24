@@ -40,7 +40,7 @@ class FileAnalize extends AnalizeAbstract
         $this->outTable(['Dir', 'Files', 'Percent'], $tableData);
         $this->out('');
 
-        // correct check
+        // for test:
         // $this->out("Count check: " . (array_sum($rootDirs) + $filesInRoot));
     }
 

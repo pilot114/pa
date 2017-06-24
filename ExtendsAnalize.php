@@ -3,35 +3,33 @@
 class ExtendsAnalize extends AnalizeAbstract
 {
 	private $tree = [];
+	private $hasInner = true;
 
-	function setClassToTree($childClass, $parentClass)
+	// stupid  - only 5 deep classes
+	private function findAndSetLeave($tree, $maybeChildClass)
 	{
-	    $iterator  = new RecursiveArrayIterator($this->tree);
-	    $recursive = new RecursiveIteratorIterator(
-	        $iterator,
-	        RecursiveIteratorIterator::SELF_FIRST
-	    );
-	    foreach ($recursive as $key => $value) {
-	        if ($key === $parentClass) {
-        		$recursive[$parentClass][] = $childClass;
-	        }
-	    }
-	}
+		foreach ($tree as $name => $childs) {
+			if (isset($childs[$maybeChildClass])) {
+				// перемещаем из рута в настоящего родителя
+				$this->tree[$name][$maybeChildClass] = $this->tree[$maybeChildClass];
+				unset($this->tree[$maybeChildClass]);
+			}
+			if (count($childs) > 0) {
+				foreach ($childs as $name2 => $childs2) {
+					if (isset($childs2[$maybeChildClass])) {
 
-	private function createTree($flat)
-	{
-		// остались классы, чьи родители не найдены ;-(
+						$this->tree[$name][$name2][$maybeChildClass] = $this->tree[$maybeChildClass];
+						unset($this->tree[$maybeChildClass]);
+					}
+					if (count($childs2) > 0) {
+						foreach ($childs2 as $name3 => $childs3) {
+							if (isset($childs3[$maybeChildClass])) {
 
-		foreach ($flat as $i => $classes) {
-			if (count($classes) == 1) {
-				$tree[$classes[0]] = [];
-				unset($flat[$i]);
-			} else {
-				if (isset($tree[$classes[1]])) {
-					$tree[$classes[1]][] = $classes[0];
-					unset($flat[$i]);
-				} else {
-					$tree[$classes[1]] = $this->createTree($tree[$classes[1]], $flat);
+								$this->tree[$name][$name2][$name3][$maybeChildClass] = $this->tree[$maybeChildClass];
+								unset($this->tree[$maybeChildClass]);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -39,35 +37,43 @@ class ExtendsAnalize extends AnalizeAbstract
 
 	public function buildTree()
 	{
-		$flat = [];
 		foreach ($this->files()->name('*.php') as $file) {
 			foreach ($file->openFile() as $string) {
 				if (strpos($string, 'class ') === 0) {
 					$string = str_replace('class ', '', $string);
 					$string = explode(' implements ', $string)[0];
 
-					$flat[] = array_map(function($class){
-						return trim($class, "\t\n\r\0\x0B\\");
+					$classes = array_map(function($class){
+						return trim($class, "\t\n\r\0\x0B\\{ ");
 					}, explode(' extends ', $string));
+
+					if (count($classes) == 1) {
+						// класс ни от кого не наследуется, всегда будет в корне
+						if (!isset($this->tree[$classes[0]])) {
+							$this->tree[$classes[0]] = [];
+						}
+					} else {
+						$this->tree[$classes[1]][$classes[0]] = [];
+					}
 				}
 			}
 		}
 
-		foreach ($flat as $classes) {
-			if (count($classes) == 1) {
-				$this->tree[$classes[0]] = [];
-			} else {
-				$this->setClassToTree($classes[0], $classes[1]);
+		// редуцируем дерево
+		foreach ($this->tree as $class => $value) {
+			if ($value) {
+				$this->findAndSetLeave($this->tree, $class);
 			}
 		}
-
-
-		var_dump($this->tree);
-		die();
 	}
 
 	public function getTree()
 	{
 		return $this->tree;
+	}
+
+	public function dumpTree()
+	{
+		dump($this->tree);
 	}
 }
