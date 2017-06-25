@@ -6,32 +6,36 @@ class ExtendsAnalize extends AnalizeAbstract
 	private $hasInner = true;
 
 	// stupid  - only 5 deep classes
-	private function findAndSetLeave($tree, $maybeChildClass)
+	private function findAndSetLeave($maybeChildClass)
 	{
-		foreach ($tree as $name => $childs) {
+		$finded = false;
+		foreach ($this->tree as $name => $childs) {
 			if (isset($childs[$maybeChildClass])) {
 				// перемещаем из рута в настоящего родителя
 				$this->tree[$name][$maybeChildClass] = $this->tree[$maybeChildClass];
-				unset($this->tree[$maybeChildClass]);
+				$finded = true;
 			}
 			if (count($childs) > 0) {
 				foreach ($childs as $name2 => $childs2) {
 					if (isset($childs2[$maybeChildClass])) {
 
 						$this->tree[$name][$name2][$maybeChildClass] = $this->tree[$maybeChildClass];
-						unset($this->tree[$maybeChildClass]);
+						$finded = true;
 					}
 					if (count($childs2) > 0) {
 						foreach ($childs2 as $name3 => $childs3) {
 							if (isset($childs3[$maybeChildClass])) {
 
 								$this->tree[$name][$name2][$name3][$maybeChildClass] = $this->tree[$maybeChildClass];
-								unset($this->tree[$maybeChildClass]);
+								$finded = true;
 							}
 						}
 					}
 				}
 			}
+		}
+		if ($finded) {
+			unset($this->tree[$maybeChildClass]);
 		}
 	}
 
@@ -62,7 +66,7 @@ class ExtendsAnalize extends AnalizeAbstract
 		// редуцируем дерево
 		foreach ($this->tree as $class => $value) {
 			if ($value) {
-				$this->findAndSetLeave($this->tree, $class);
+				$this->findAndSetLeave($class);
 			}
 		}
 	}
@@ -74,6 +78,12 @@ class ExtendsAnalize extends AnalizeAbstract
 
 	public function dumpTree()
 	{
-		dump($this->tree);
+		$onlyWithChilds = [];
+		foreach ($this->tree as $key => $childs) {
+			if (count($childs) > 0) {
+				$onlyWithChilds[$key] = $childs;
+			}
+		}
+		dump($onlyWithChilds);
 	}
 }

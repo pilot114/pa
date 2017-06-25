@@ -7,8 +7,8 @@ use Symfony\Component\Finder\Finder;
 */
 class AnalizeAbstract
 {
-    private $path;
-    private $output;
+    protected $path;
+    protected $output;
     // https://symfony.com/doc/current/components/finder.html
 
     // in
@@ -27,7 +27,7 @@ class AnalizeAbstract
     // size
     // exclude
     // count
-    private $finder;
+    protected $finder;
 
     function __construct($path)
     {
