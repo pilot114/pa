@@ -1,6 +1,6 @@
 <?php
 
-class FileAnalize extends AnalizeAbstract
+class FileAnalize extends FinderAnalize
 {
     public function dirStat()
     {
@@ -62,5 +62,29 @@ class FileAnalize extends AnalizeAbstract
         $this->out('Big files: (>32kb)');
         $this->outTable(['Size, kb', 'Name'], $bigFiles);
         $this->out('');
+    }
+
+    public function findBySignature($criteriaFind, $criteriaSelect)
+    {
+        $finded = [];
+        foreach ($this->files()->name('*.php') as $file) {
+
+            $currentMatch = false;
+            foreach ($file->openFile() as $string) {
+                // если находим хотябы 1 критерий поиска - берем фаил целиком
+                if (strpos($string, $criteriaFind) !== false) {
+                    $currentMatch = true;
+                    break;
+                }
+            }
+            if ($currentMatch) {
+                foreach ($file->openFile() as $string) {
+                    if (strpos($string, $criteriaFind) !== false) {
+                        $currentMatch = true;
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
