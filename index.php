@@ -2,21 +2,26 @@
 
 require './bootstrap.php';
 
-$projectDir = '/home/pilot114/sources/job/';
+$projectDir = '/home/oleg/sources/job/';
 
-echo '<pre>';
+$fileA = new FileAnalize($projectDir . 'scripts/Job');
+$serviceA = new ServiceAnalize($projectDir . 'config/container.php');
+$classA = new ClassAnalize($projectDir . 'scripts/Job');
 
-$pa = new FileAnalize($projectDir . 'scripts/Job');
-$pa->dirStat();
-$pa->fileStat();
-$pa->view();
+// получим информацию по классу
+// интерфейсы и трейты чекаются отдельно
 
-$sa = new ServiceAnalize($projectDir . 'config/container.php');
-print_r($sa->getInfo());
+$className = 'Job_Toponym_Service';
 
-echo '</pre>';
+$classInfo = [
+	'inheritanceTree' => $classA->findInheritanceTree($className),
+	'whereService' => [],
+	'usedService' => [],
+	'usedAsClass' => []
+];
+if (in_array($className, $serviceA->getListClasses())) {
+	$classInfo['whereService'] = $serviceA->getWhereService($className);
+}
+// тут костыль. whereService,usedService - надо искать new в коде
 
-
-$ea = new ExtendsAnalize($projectDir . 'scripts/Job');
-$ea->buildTree();
-$ea->dumpTree();
+dd($classInfo);

@@ -1,7 +1,9 @@
 <?php
 
 require './vendor/autoload.php';
-require './AnalizeAbstract.php';
+
+require './FinderAnalize.php';
+
 require './FileAnalize.php';
 require './ServiceAnalize.php';
-require './ExtendsAnalize.php';
+require './ClassAnalize.php';
