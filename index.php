@@ -2,7 +2,8 @@
 
 require './bootstrap.php';
 
-$projectDir = '/home/oleg/sources/job/';
+// $projectDir = '/home/oleg/sources/job/';
+$projectDir = '/home/pilot114/sources/job/';
 
 $fileA = new FileAnalize($projectDir . 'scripts/Job');
 $serviceA = new ServiceAnalize($projectDir . 'config/container.php');

@@ -4,7 +4,6 @@ class ClassAnalize extends FinderAnalize
 {
 	private $classes = [];
 	private $tree = [];
-	private $hasInner = true;
 
 	// stupid  - only 5 deep classes
 	private function findAndSetLeave($maybeChildClass)
@@ -70,36 +69,6 @@ class ClassAnalize extends FinderAnalize
 		foreach ($this->tree as $class => $value) {
 			if ($value) {
 				$this->findAndSetLeave($class);
-			}
-		}
-	}
-
-	// stupid - only 5 deep classes
-	private function findAndSetLeave($tree, $maybeChildClass)
-	{
-		foreach ($tree as $name => $childs) {
-			if (isset($childs[$maybeChildClass]) && isset($this->tree[$maybeChildClass])) {
-				// перемещаем из рута в настоящего родителя
-				$this->tree[$name][$maybeChildClass] = $this->tree[$maybeChildClass];
-				unset($this->tree[$maybeChildClass]);
-			}
-			if (count($childs) > 0) {
-				foreach ($childs as $name2 => $childs2) {
-					if (isset($childs2[$maybeChildClass]) && isset($this->tree[$maybeChildClass])) {
-
-						$this->tree[$name][$name2][$maybeChildClass] = $this->tree[$maybeChildClass];
-						unset($this->tree[$maybeChildClass]);
-					}
-					if (count($childs2) > 0) {
-						foreach ($childs2 as $name3 => $childs3) {
-							if (isset($childs3[$maybeChildClass]) && isset($this->tree[$maybeChildClass])) {
-
-								$this->tree[$name][$name2][$name3][$maybeChildClass] = $this->tree[$maybeChildClass];
-								unset($this->tree[$maybeChildClass]);
-							}
-						}
-					}
-				}
 			}
 		}
 	}
