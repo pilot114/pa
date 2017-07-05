@@ -33,21 +33,42 @@ class ServiceAnalize
 		}, array_column($this->container, 'class'));
 	}
 
-	public function getWhereService($className)
+	public function getServiceName($className)
 	{
-		// получаем имя сервиса
-		$serviceNameFinded = array_keys(array_filter($this->container , function($service, $serviceName) use ($className) {
+		return array_keys(array_filter($this->container , function($service, $serviceName) use ($className) {
 			return ($service['class'] == $className);
 		}, ARRAY_FILTER_USE_BOTH))[0];
+	}
 
-		// находим где используется сервис
+	// находим где используется сервис
+	public function getWhereService($serviceName)
+	{
 		$findedService = [];
-		foreach ($this->container as $serviceName => $service) {
+		foreach ($this->container as $serviceNameCurrent => $service) {
 
-			if (isset($service['args']) && in_array('$'.$serviceNameFinded, $service['args'])) {
-				$findedService[$serviceName] = $service;
+			if (isset($service['args']) && in_array('$'.$serviceName, $service['args'])) {
+				$findedService[$serviceNameCurrent] = $service;
 			}
 		}
 		return $findedService;
+	}
+
+	public function getUsedService($serviceName)
+	{
+		$services = [];
+		if (isset($this->container[$serviceName])) {
+			$depends = $this->container[$serviceName]['args'];
+
+			foreach ($depends as $serviceName) {
+				$serviceName = trim($serviceName, '$');
+				$services[$serviceName] = $this->container[$serviceName]['class'];
+			}
+			$container = $this->container;
+			$depends = array_map(function($class) use ($container){
+				return trim($class, '$');
+			}, $depends);
+		}
+
+		return $services;
 	}
 }

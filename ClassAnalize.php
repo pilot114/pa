@@ -39,17 +39,22 @@ class ClassAnalize extends FinderAnalize
 		}
 	}
 
+	public function extractClassesFromString($string)
+	{
+		$string = str_replace('class ', '', $string);
+		$string = explode(' implements ', $string)[0];
+
+		return array_map(function($class){
+			return trim($class, "\t\n\r\0\x0B\\{ ");
+		}, explode(' extends ', $string));
+	}
+
 	public function buildTree()
 	{
 		foreach ($this->files()->name('*.php') as $file) {
 			foreach ($file->openFile() as $string) {
 				if (strpos($string, 'class ') === 0) {
-					$string = str_replace('class ', '', $string);
-					$string = explode(' implements ', $string)[0];
-
-					$classes = array_map(function($class){
-						return trim($class, "\t\n\r\0\x0B\\{ ");
-					}, explode(' extends ', $string));
+					$classes = $this->extractClassesFromString($string);
 
 					$this->classes[] = $classes[0];
 

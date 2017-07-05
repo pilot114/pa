@@ -64,7 +64,7 @@ class FileAnalize extends FinderAnalize
         $this->out('');
     }
 
-    public function findBySignature($criteriaFind, $criteriaSelect)
+    public function findBySignature($criteriaFindRegex, $criteriaSelectRegex)
     {
         $finded = [];
         foreach ($this->files()->name('*.php') as $file) {
@@ -72,19 +72,23 @@ class FileAnalize extends FinderAnalize
             $currentMatch = false;
             foreach ($file->openFile() as $string) {
                 // если находим хотябы 1 критерий поиска - берем фаил целиком
-                if (strpos($string, $criteriaFind) !== false) {
+                preg_match($criteriaFindRegex, $string, $matches);
+                if ($matches) {
                     $currentMatch = true;
                     break;
                 }
             }
             if ($currentMatch) {
-                foreach ($file->openFile() as $string) {
-                    if (strpos($string, $criteriaFind) !== false) {
+                foreach ($file->openFile() as $string2) {
+                    preg_match($criteriaSelectRegex, $string2, $matches);
+                    if ($matches) {
+                        $finded[] = $string2;
                         $currentMatch = true;
                         break;
                     }
                 }
             }
         }
+        return $finded;
     }
 }
