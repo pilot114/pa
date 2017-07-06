@@ -12,6 +12,6 @@ $classA = new ClassAnalize($projectDir . 'scripts/Job');
 // интерфейсы и трейты чекаются отдельно
 
 $info = new Informer($fileA, $classA, $serviceA);
-dd($info->byClass('Job_Toponym_Service'));
+dd($info->byClass('Job_Api_Exception_BadRequest'));
 
 // тут костыль. whereService,usedService - надо искать new в коде

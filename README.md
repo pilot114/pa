@@ -8,6 +8,8 @@ FinderAnalize - релизует обертку над Finder + буферизи
 FileAnalize - общая статистика по файлам.
 ServiceAnalize - информация по DIC
 ClassAnalize - инфа по классам, в т.ч. дерево наследования.
+RoutingAnalize - информация по роутингу
+ActionAnalize - информация по экшенам
 
 Сделать покрытие запросов в БД/кэшам
 

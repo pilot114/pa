@@ -21,22 +21,21 @@ class Informer
 			'usedService' => [],
 			'usedAsClass' => []
 		];
+		
 		if (in_array($className, $this->sa->getListClasses())) {
 			$serviceName = $this->sa->getServiceName($className);
 			$classInfo['service'] = $serviceName;
 
 			$classInfo['whereService'] = $this->sa->getWhereService($serviceName);
 			$classInfo['usedService'] = $this->sa->getUsedService($serviceName);
-
-			// test
-			$className = 'Job_Api_Exception_BadRequest';
-			$findedStrings = $this->fa->findBySignature("/new $className\(/", '/^class /');
-
-			foreach ($findedStrings as $string) {
-				$class = $this->ca->extractClassesFromString($string)[0];
-				$classInfo['usedAsClass'][] = $class;
-			}
 		}
+
+		$findedStrings = $this->fa->findBySignature("/new $className\(/", '/^class /');
+		foreach ($findedStrings as $string) {
+			$class = $this->ca->extractClassesFromString($string)[0];
+			$classInfo['usedAsClass'][] = $class;
+		}
+
 		return $classInfo;
 	}
 }
