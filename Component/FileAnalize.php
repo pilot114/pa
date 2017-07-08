@@ -1,6 +1,6 @@
 <?php
 
-class FileAnalize extends FinderAnalize
+class FileAnalize extends AbstractFinderAnalize
 {
     public function dirStat()
     {
@@ -71,7 +71,7 @@ class FileAnalize extends FinderAnalize
 
             $currentMatch = false;
             foreach ($file->openFile() as $string) {
-                // если находим хотябы 1 критерий поиска - берем фаил целиком
+                // если находим хотябы 1 критерий поиска - берем файл целиком
                 preg_match($criteriaFindRegex, $string, $matches);
                 if ($matches) {
                     $currentMatch = true;

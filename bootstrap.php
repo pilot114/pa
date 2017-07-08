@@ -2,10 +2,8 @@
 
 require './vendor/autoload.php';
 
-require './FinderAnalize.php';
-
-require './FileAnalize.php';
-require './ServiceAnalize.php';
-require './ClassAnalize.php';
+spl_autoload_register(function ($class) {
+    require_once('./Component/'.$class.'.php');
+});
 
 require './Informer.php';

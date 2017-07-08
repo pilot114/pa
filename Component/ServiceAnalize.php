@@ -41,7 +41,7 @@ class ServiceAnalize
 	}
 
 	// находим где используется сервис
-	public function getWhereService($serviceName)
+	public function getWhereUsedService($serviceName)
 	{
 		$findedService = [];
 		foreach ($this->container as $serviceNameCurrent => $service) {
@@ -53,7 +53,8 @@ class ServiceAnalize
 		return $findedService;
 	}
 
-	public function getUsedService($serviceName)
+	// находим кто использует сервис
+	public function getWhoUsesService($serviceName)
 	{
 		$services = [];
 		if (isset($this->container[$serviceName])) {

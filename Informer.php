@@ -9,33 +9,45 @@ class Informer
 		$this->sa = $sa;
 
 		$this->ca->buildTree();
+	
+		$this->classes = [];
 	}
 
-	public function byClass($className)
+	public function addClass($className)
 	{
-		$classInfo = [
-			'class' => $className,
-			'service' => null,
-			'inheritanceTree' => $this->ca->findInheritanceTree($className),
-			'whereService' => [],
-			'usedService' => [],
-			'usedAsClass' => []
-		];
-		
-		if (in_array($className, $this->sa->getListClasses())) {
-			$serviceName = $this->sa->getServiceName($className);
-			$classInfo['service'] = $serviceName;
+		$this->classes[$className] = null;
+	}
 
-			$classInfo['whereService'] = $this->sa->getWhereService($serviceName);
-			$classInfo['usedService'] = $this->sa->getUsedService($serviceName);
+	public function build()
+	{
+		foreach ($this->classes as $className => $_) {
+
+			$classInfo = [
+				'service' => [
+					'name' => null,
+					'whereUsed' => [],
+					'whoUses' => [],
+				],
+				'inheritanceTree' => $this->ca->findInheritanceTree($className),
+				'whereUsed' => []
+			];
+			
+			if (in_array($className, $this->sa->getListClasses())) {
+				$serviceName = $this->sa->getServiceName($className);
+
+				$classInfo['service']['name'] = $serviceName;
+				$classInfo['service']['whereUsed'] = $this->sa->getWhereUsedService($serviceName);
+				$classInfo['service']['whoUses'] = $this->sa->getWhoUsesService($serviceName);
+			}
+
+			$findedStrings = $this->fa->findBySignature("/new $className\(/", '/^class /');
+			foreach ($findedStrings as $string) {
+				$class = $this->ca->extractClassesFromString($string)[0];
+				$classInfo['whereUsed'][] = $class;
+			}
+			$this->classes[$className] = $classInfo;
 		}
 
-		$findedStrings = $this->fa->findBySignature("/new $className\(/", '/^class /');
-		foreach ($findedStrings as $string) {
-			$class = $this->ca->extractClassesFromString($string)[0];
-			$classInfo['usedAsClass'][] = $class;
-		}
-
-		return $classInfo;
+		return $this->classes;
 	}
 }

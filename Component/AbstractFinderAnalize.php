@@ -5,7 +5,7 @@ use Symfony\Component\Finder\Finder;
 /**
 * 	Базовый класс для Analize, использующих Finder
 */
-class FinderAnalize
+abstract class AbstractFinderAnalize
 {
     protected $path;
     protected $output;

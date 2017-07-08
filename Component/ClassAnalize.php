@@ -1,6 +1,6 @@
 <?php
 
-class ClassAnalize extends FinderAnalize
+class ClassAnalize extends AbstractFinderAnalize
 {
 	private $classes = [];
 	private $tree = [];
