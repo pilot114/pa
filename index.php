@@ -12,8 +12,7 @@ $classA = new ClassAnalize($projectDir . 'scripts/Job');
 // интерфейсы и трейты чекаются отдельно
 
 $info = new Informer($fileA, $classA, $serviceA);
-$info->addClass('Job_Api_Exception_BadRequest');
-$info->addClass('Job_Event_Exception');
+$info->addClass('Job_Validator_JsonSchema_Format');
 dd($info->build());
 
 // тут костыль. whereService,usedService - надо искать new в коде
