@@ -41,6 +41,7 @@ class ClassAnalize extends AbstractFinderAnalize
 
 	public function extractClassesFromString($string)
 	{
+		$string = str_replace('abstract ', '', $string);
 		$string = str_replace('class ', '', $string);
 		$string = explode(' implements ', $string)[0];
 
@@ -53,7 +54,7 @@ class ClassAnalize extends AbstractFinderAnalize
 	{
 		foreach ($this->files()->name('*.php') as $file) {
 			foreach ($file->openFile() as $string) {
-				if (strpos($string, 'class ') === 0) {
+				if (strpos($string, 'class ') === 0 || strpos($string, 'abstract class ') === 0) {
 					$classes = $this->extractClassesFromString($string);
 
 					$this->classes[] = $classes[0];

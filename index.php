@@ -9,10 +9,10 @@ $fileA = new FileAnalize($projectDir . 'scripts/Job');
 $serviceA = new ServiceAnalize($projectDir . 'config/container.php');
 $classA = new ClassAnalize($projectDir . 'scripts/Job');
 
-// интерфейсы и трейты чекаются отдельно
+// только для классов. интерфейсы и трейты чекаются отдельно
 
 $info = new Informer($fileA, $classA, $serviceA);
 $info->addClass('Job_Validator_JsonSchema_Format');
-dd($info->build());
+// dd($info->build());
 
-// тут костыль. whereService,usedService - надо искать new в коде
+$routes = new RouterAnalize($projectDir . 'config/routes');
