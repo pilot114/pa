@@ -1,8 +1,8 @@
 <?php
 
-class Informer
+class ClassReport
 {
-	function __construct(FileAnalize $fa, ClassAnalize $ca, ServiceAnalize $sa)
+	function __construct(FsAnalize $fa, ClassAnalize $ca, ServiceAnalize $sa)
 	{
 		$this->fa = $fa;
 		$this->ca = $ca;
@@ -26,24 +26,25 @@ class Informer
 				'service' => [
 					'name' => null,
 					'whereUsed' => [],
-					'whoUses' => [],
+					'args' => [],
 				],
 				'inheritanceTree' => $this->ca->findInheritanceTree($className),
-				'whereUsed' => []
+				'new' => []
 			];
 			
 			if (in_array($className, $this->sa->getListClasses())) {
-				$serviceName = $this->sa->getServiceName($className);
+				$serviceName = $this->sa->getServiceNameByClassName($className);
 
 				$classInfo['service']['name'] = $serviceName;
-				$classInfo['service']['whereUsed'] = $this->sa->getWhereUsedService($serviceName);
-				$classInfo['service']['whoUses'] = $this->sa->getWhoUsesService($serviceName);
+				$classInfo['service']['whereUsed'] = $this->sa->getServicesWhereUsed($serviceName);
+				$classInfo['service']['args'] = $this->sa->getServicesFromArgs($serviceName);
 			}
 
+			// дополнительно, ищем где класс создается через new
 			$findedStrings = $this->fa->findBySignature("/new $className\(/", '/^class /');
 			foreach ($findedStrings as $string) {
-				$class = $this->ca->extractClassesFromString($string)[0];
-				$classInfo['whereUsed'][] = $class;
+				$class = $this->ca::extractClassesFromString($string)[0];
+				$classInfo['new'][] = $class;
 			}
 			$this->classes[$className] = $classInfo;
 		}

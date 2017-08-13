@@ -1,11 +1,8 @@
 <?php
 
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\Finder as TrueFinder;
 
-/**
-* 	Базовый класс для Analize, использующих Finder
-*/
-abstract class AbstractFinderAnalize
+class Finder
 {
     protected $path;
     protected $output;
@@ -27,12 +24,18 @@ abstract class AbstractFinderAnalize
     // size
     // exclude
     // count
+    // sort
+    // sortByName
+    // sortByType
+    // sortByAccessedTime
+    // sortByChangedTime
+    // sortByModifiedTime
     protected $finder;
 
     function __construct($path)
     {
         $this->path = $path;
-        $this->finder = new Finder();
+        $this->finder = new TrueFinder();
         $this->finder->in($this->path);
     }
 
@@ -43,31 +46,20 @@ abstract class AbstractFinderAnalize
         return call_user_func_array([$finder, $method], $args);
     }
 
-        // sort
-    // sortByName
-    // sortByType
-    // sortByAccessedTime
-    // sortByChangedTime
-    // sortByModifiedTime
-    
-    public function sort($params)
-    {
-    }
-
     public function getIterator()
     {
         return $this->finder->getIterator();
-    }
-
-    public function view()
-    {
-        echo $this->output;
     }
 
     public function getFiles($subpath)
     {
         $subpath = str_replace('/', '\/', $subpath);
         return $this->files()->path('/^' . $subpath . '\//');
+    }
+
+    public function view()
+    {
+        return $this->output;
     }
 
     protected function outWrap($message)

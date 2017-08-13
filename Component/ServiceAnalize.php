@@ -2,13 +2,16 @@
 
 class ServiceAnalize
 {
-	private $container;
-	private $containerInfo;
+	private $container = [];
 
 	public function __construct($containerFile)
 	{
 		$this->container = include($containerFile);
+	}
 
+	// для статистики - показывает какие ключи есть в описаниях сервисов
+	public function getInfo() : string
+	{
 		$info = ['keys' => [], 'count' => 0];
 		$info['count'] = count($this->container);
 		foreach ($this->container as $serviceName => $service) {
@@ -16,16 +19,10 @@ class ServiceAnalize
 		}
 		$info['keys'] = array_count_values($info['keys']);
 
-		$classes = array_column($this->container, 'class');
-		$this->containerInfo = $info;
+		return $info;
 	}
 
-	public function getInfo()
-	{
-		return $this->containerInfo;
-	}
-
-	public function getListClasses()
+	public function getListClasses() : array
 	{
 		// убираем начальный слэш у некоторых классов
 		return array_map(function($class){
@@ -33,15 +30,14 @@ class ServiceAnalize
 		}, array_column($this->container, 'class'));
 	}
 
-	public function getServiceName($className)
+	public function getServiceNameByClassName($className) : string
 	{
 		return array_keys(array_filter($this->container , function($service, $serviceName) use ($className) {
 			return ($service['class'] == $className);
 		}, ARRAY_FILTER_USE_BOTH))[0];
 	}
 
-	// находим где используется сервис
-	public function getWhereUsedService($serviceName)
+	public function getServicesWhereUsed($serviceName) : array
 	{
 		$findedService = [];
 		foreach ($this->container as $serviceNameCurrent => $service) {
@@ -53,21 +49,25 @@ class ServiceAnalize
 		return $findedService;
 	}
 
-	// находим кто использует сервис
-	public function getWhoUsesService($serviceName)
+	public function getServicesFromArgs($serviceName) : array
 	{
-		$services = [];
-		if (isset($this->container[$serviceName])) {
-			$depends = $this->container[$serviceName]['args'];
+		if (!isset($this->container[$serviceName])) {
+			return [];
+		}
 
-			foreach ($depends as $serviceName) {
-				$serviceName = trim($serviceName, '$');
-				$services[$serviceName] = $this->container[$serviceName]['class'];
+		$services = [];
+
+		$service = $this->container[$serviceName];
+		$args = $service['args'];
+
+		foreach ($args as $serviceName) {
+			$serviceName = trim($serviceName, '$');
+			$services[$serviceName] = $this->container[$serviceName];
+
+			// выводить factory мы не хотим
+			if (isset($services[$serviceName]['factory'])) {
+				unset($services[$serviceName]['factory']);
 			}
-			$container = $this->container;
-			$depends = array_map(function($class) use ($container){
-				return trim($class, '$');
-			}, $depends);
 		}
 
 		return $services;

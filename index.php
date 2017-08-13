@@ -5,14 +5,21 @@ require './bootstrap.php';
 $projectDir = '/home/oleg/sources/job/';
 // $projectDir = '/home/pilot114/sources/job/';
 
-$fileA = new FileAnalize($projectDir . 'scripts/Job');
+$finder = new Finder($projectDir . 'scripts/Job');
+
+$fileA = new FsAnalize($finder);
 $serviceA = new ServiceAnalize($projectDir . 'config/container.php');
-$classA = new ClassAnalize($projectDir . 'scripts/Job');
+$classA = new ClassAnalize($finder);
 
 // только для классов. интерфейсы и трейты чекаются отдельно
+$report = new ClassReport($fileA, $classA, $serviceA);
+$report->addClass('Job_Model_Entity_Vacancy');
+dd($report->build());
 
-$info = new Informer($fileA, $classA, $serviceA);
-$info->addClass('Job_Validator_JsonSchema_Format');
-// dd($info->build());
+// $events = new EventAnalize($finder);
 
-$routes = new RouterAnalize($projectDir . 'config/routes');
+// $events = new ActionAnalize($finder);
+// $events = new CliAnalize($finder);
+
+// не особо нужно =)
+// $routes = new RouterAnalize($projectDir . 'config/routes');
