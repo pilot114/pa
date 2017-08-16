@@ -13,13 +13,18 @@ $classA = new ClassAnalize($finder);
 
 // только для классов. интерфейсы и трейты чекаются отдельно
 $report = new ClassReport($fileA, $classA, $serviceA);
-$report->addClass('Job_Model_Entity_Vacancy');
+$report->addClass('Job\Domain\Profiles\ProfileService');
+
 dd($report->build());
 
+// trigger -> event -> listen
 // $events = new EventAnalize($finder);
 
-// $events = new ActionAnalize($finder);
-// $events = new CliAnalize($finder);
+// получить ВСЁ, что вызывается в конкретном экшене
+// $actions = new ActionAnalize($finder);
+// $cli = new CliAnalize($finder);
 
-// не особо нужно =)
+// нужен для автоматической генерации типовых запросов к апи
 // $routes = new RouterAnalize($projectDir . 'config/routes');
+
+// + вводить id хоть чего - получать хоть че с этим id + все связанные сущности
