@@ -13,7 +13,23 @@ class FsAnalize
     {
         $this->dirStat();
         $this->fileStat();
-        return $this->view();
+        return $this->finder->view();
+    }
+
+    public function findCountUsage($criteriaFindRegex)
+    {
+        $finded = [];
+        foreach ($this->finder->files()->name('*.php') as $file) {
+            $countMatches = 0;
+            foreach ($file->openFile() as $string) {
+                preg_match($criteriaFindRegex, $string, $matches);
+                $countMatches += count($matches);
+            }
+            if ($countMatches) {
+                $finded[$file->getRelativePathname()] = $countMatches;
+            }
+        }
+        return $finded;
     }
 
     public function findBySignature($criteriaFindRegex, $criteriaSelectRegex)
@@ -44,23 +60,24 @@ class FsAnalize
         return $finded;
     }
 
-    private function dirStat()
+    private function dirStat($printNotPhp = false)
     {
-        $this->outWrap($this->finder->path);
+        $this->finder->outWrap($this->finder->path);
 
         $totalFilesCount = $this->finder->files()->count();
         $filesInRoot = $this->finder->files()->depth('== 0')->count();
 
-        $this->out("Total files: " .   $totalFilesCount);
-
-        $this->out("Not php files: " . $this->finder->files()->notName('*.php')->count());
-        foreach ($this->finder->files()->notName('*.php') as $file) {
-            $this->out('* ' . $file->getRelativePathname());
+        $this->finder->out("Total files: " .   $totalFilesCount);
+        $this->finder->out("Not php files: " . $this->finder->files()->notName('*.php')->count());
+        if ($printNotPhp) {
+            foreach ($this->finder->files()->notName('*.php') as $file) {
+                $this->finder->out('* ' . $file->getRelativePathname());
+            }
         }
 
-        $this->out("Dirs in root: " .  $this->finder->directories()->depth('== 0')->count());
-        $this->out("Files in root: " .  $filesInRoot);
-        $this->out('');
+        $this->finder->out("Dirs in root: " .  $this->finder->directories()->depth('== 0')->count());
+        $this->finder->out("Files in root: " .  $filesInRoot);
+        $this->finder->out('');
 
         $rootDirs = [];
         foreach ($this->finder->directories()->depth('== 0') as $dir) {
@@ -78,9 +95,9 @@ class FsAnalize
                 $tableData[] = [$dirName, $count, $percent . '%'];
             }
         }
-        $this->out('Big dirs: (>1% file count)');
-        $this->outTable(['Dir', 'Files', 'Percent'], $tableData);
-        $this->out('');
+        $this->finder->out('Big dirs: (>1% file count)');
+        $this->finder->outTable(['Dir', 'Files', 'Percent'], $tableData);
+        $this->finder->out('');
     }
 
     private function fileStat()
@@ -98,8 +115,8 @@ class FsAnalize
             }
         );
 
-        $this->out('Big files: (>32kb)');
-        $this->outTable(['Size, kb', 'Name'], $bigFiles);
-        $this->out('');
+        $this->finder->out('Big files: (>32kb)');
+        $this->finder->outTable(['Size, kb', 'Name'], $bigFiles);
+        $this->finder->out('');
     }
 }

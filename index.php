@@ -2,10 +2,10 @@
 
 require './bootstrap.php';
 
-$projectDir = '/home/oleg/sources/job/';
+$projectDir = '/c/data/httpd/main/www/ml/www/classes';
 // $projectDir = '/home/pilot114/sources/job/';
 
-$finder = new Finder($projectDir . 'scripts/Job');
+$finder = new Finder($projectDir);
 
 $fileA = new FsAnalize($finder);
 $serviceA = new ServiceAnalize($projectDir . 'config/container.php');

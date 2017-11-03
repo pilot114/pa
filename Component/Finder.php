@@ -4,7 +4,7 @@ use Symfony\Component\Finder\Finder as TrueFinder;
 
 class Finder
 {
-    protected $path;
+    public $path;
     protected $output;
     // https://symfony.com/doc/current/components/finder.html
 
@@ -62,19 +62,19 @@ class Finder
         return $this->output;
     }
 
-    protected function outWrap($message)
+    public function outWrap($message)
     {
         $this->out(str_repeat("=", strlen($message)));
         $this->out($message);
         $this->out(str_repeat("=", strlen($message)));
     }
 
-    protected function out($message)
+    public function out($message)
     {
         $this->output .= $message . "\n";
     }
 
-    protected function outTable($fields, $data)
+    public function outTable($fields, $data)
     {
         // add index column
         array_unshift($fields, '#');
