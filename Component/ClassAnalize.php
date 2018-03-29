@@ -1,5 +1,7 @@
 <?php
 
+namespace Component;
+
 class ClassAnalize
 {
 	private $classesNames = [];
@@ -22,6 +24,9 @@ class ClassAnalize
 		}, explode(' extends ', $string));
 	}
 
+    /**
+     * return null
+     */
 	public function buildTree()
 	{
 		foreach ($this->finder->files()->name('*.php') as $file) {
@@ -57,8 +62,8 @@ class ClassAnalize
 			if ($name == $className) {
 				return [$name => $this->tree[$name]];
 			}
-			$iterator  = new RecursiveArrayIterator($this->tree[$name]);
-		    $recursive = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
+			$iterator  = new \RecursiveArrayIterator($this->tree[$name]);
+		    $recursive = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::SELF_FIRST);
 		    foreach ($recursive as $key => $value) {
 		        if ($key === $className) {
 		            return [$name => $this->tree[$name]];

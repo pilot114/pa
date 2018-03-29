@@ -67,3 +67,16 @@ tinker - для ручного анализа классов проекта
 
 генераторы компонент проекта - создание exeption extends Job_Exception,
 создание клихи, листенера, листенера эвентов доктрины, тестов и т.д.
+
+
+// trigger -> event -> listen
+// $events = new EventAnalize($finder);
+
+// получить ВСЁ, что вызывается в конкретном экшене
+// $actions = new ActionAnalize($finder);
+// $cli = new CliAnalize($finder);
+
+// нужен для автоматической генерации типовых запросов к апи
+// $routes = new RouterAnalize($projectDir . 'config/routes');
+
+// + вводить id хоть чего - получать хоть че с этим id + все связанные сущности

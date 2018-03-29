@@ -7,5 +7,8 @@
         "hassankhan/config": "^0.10.0",
         "symfony/yaml": "^3.3",
         "nikic/php-parser": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {"Component\\": "Component/"}
     }
 }

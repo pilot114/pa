@@ -1,5 +1,7 @@
 <?php
 
+namespace Component;
+
 class FsAnalize
 {
     private $finder;
@@ -9,6 +11,9 @@ class FsAnalize
         $this->finder = $finder;
     }
 
+    /**
+     * Выводит общую информацию по файлам и директориям
+     */
     public function stat()
     {
         $this->dirStat();
@@ -16,6 +21,9 @@ class FsAnalize
         return $this->finder->view();
     }
 
+    /**
+     * Находит кол-во использований в коде по regex
+     */
     public function findCountUsage($criteriaFindRegex)
     {
         $finded = [];
@@ -32,6 +40,12 @@ class FsAnalize
         return $finded;
     }
 
+    /**
+     * Находит что-нибудь в коде по regex
+     * @param $criteriaFindRegex   - сигнатура файла, в котором ищем
+     * @param $criteriaSelectRegex - сигнатура того, что ищем
+     * @return array
+     */
     public function findBySignature($criteriaFindRegex, $criteriaSelectRegex)
     {
         $finded = [];
@@ -41,7 +55,7 @@ class FsAnalize
             foreach ($file->openFile() as $string) {
                 // если находим хотябы 1 критерий поиска - берем файл целиком
                 preg_match($criteriaFindRegex, $string, $matches);
-                if ($matches) {
+                if (count($matches) > 0) {
                     $currentMatch = true;
                     break;
                 }

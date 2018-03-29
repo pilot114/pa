@@ -1,5 +1,7 @@
 <?php
 
+namespace Component;
+
 use Symfony\Component\Finder\Finder as TrueFinder;
 
 class Finder
