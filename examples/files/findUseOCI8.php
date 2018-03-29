@@ -2,7 +2,7 @@
 
 require './vendor/autoload.php';
 
-$projectDir = '/c/data/httpd/main/www/ml/www/classes';
+$projectDir = './data/src';
 
 $finder = new Component\Finder($projectDir);
 $fileAnalizer = new Component\FsAnalize($finder);
@@ -33,4 +33,7 @@ foreach ($report as $name => $files) {
 	$useStat[$name] = array_sum($files);
 }
 arsort($useStat);
+$useStat = array_filter($useStat, function($item){
+    return $item > 0;
+});
 dump($useStat);
