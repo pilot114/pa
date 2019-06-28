@@ -9,6 +9,6 @@ $classAnalizer = new Component\ClassAnalize($finder);
 
 // Получаем дерево наследования Entity
 $classAnalizer->buildTree();
-$classFamily = $classAnalizer->findInheritanceTree('Entity');
+$classFamily = $classAnalizer->findInheritanceTree('AbstractRestApi');
 
 dump($classFamily);

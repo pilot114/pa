@@ -37,3 +37,7 @@ $useStat = array_filter($useStat, function($item){
     return $item > 0;
 });
 dump($useStat);
+
+$name = 'oci_statement_type';
+dump("Пример отчёта по одной функции: " . $name);
+dump($report[$name]);
