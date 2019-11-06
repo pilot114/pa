@@ -6,8 +6,10 @@ use PhpParser\ParserFactory;
 use PhpParser\Error;
 
 use Component\Parser\MyTraverser;
-use Component\Parser\Visitor\String_;
 
+/**
+ * TODO отображать прогресс
+ */
 class Parser
 {
     private $finder;
@@ -19,10 +21,10 @@ class Parser
         $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
     }
 
-    public function getListTokens()
+    public function getListTokens($name)
     {
         $traverser = new MyTraverser();
-        $traverser->addVisitor(new String_());
+        $traverser->addVisitor(new $name());
 
         $commonBuffer = [];
 
@@ -35,13 +37,11 @@ class Parser
                 // echo sprintf("Parse Error: %s %s \n", $file->getBasename(), $e->getMessage());
             }
             $traverser->traverse($stms);
-            $stringVisitor = $traverser->getVisitors()[0];
-            foreach($stringVisitor->getBuffer() as $string) {
+            $visitor = $traverser->getVisitors()[0];
+            foreach($visitor->getBuffer() as $string) {
                 $commonBuffer[] = $string;
             }
-            echo "*";
         }
-
-        echo count($commonBuffer);
+        return $commonBuffer;
     }
 }
