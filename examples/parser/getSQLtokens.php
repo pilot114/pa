@@ -58,6 +58,10 @@ $procNames = array_unique($procNames);
 natsort($procNames);
 $procNames = array_values(array_filter($procNames));
 
+foreach($procNames as $p) {
+echo $p . "\n";
+}
+
 file_put_contents($outputDir . '/' . date('d.m.Y') . '.json', [
     'list' => json_encode($procNames)
 ]);

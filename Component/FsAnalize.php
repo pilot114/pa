@@ -4,6 +4,9 @@ namespace Component;
 
 class FsAnalize
 {
+    /**
+     * @var Finder
+     */
     private $finder;
 
     public function __construct(Finder $finder)
@@ -17,7 +20,7 @@ class FsAnalize
     public function stat()
     {
         $this->dirStat();
-        $this->fileStat();
+        $this->fileStat('php');
         return $this->finder->view();
     }
 
@@ -114,10 +117,15 @@ class FsAnalize
         $this->finder->out('');
     }
 
-    private function fileStat()
+    private function fileStat($ext = null)
     {
+        $pattern = '*';
+        if ($ext) {
+            $pattern .= '.' . $ext;
+        }
+
         $bigFiles = [];
-        foreach ($this->finder->files() as $file) {
+        foreach ($this->finder->files()->name($pattern) as $file) {
             if ($file->getSize() > 1024 * 32) {
                 $bigFiles[] = [(int)($file->getSize()/1024), $file->getRelativePathname()];
             }
